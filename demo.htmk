@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INVRX</title>
+     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitcount+Grid+Double:wght@100..900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#6366F1',
+                        accent: '#8B5CF6',
+                        dark: '#1F2937',
+                        light: '#F9FAFB'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s, transform 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .toast.success {
+            background-color: #10B981;
+        }
+        
+        .toast.error {
+            background-color: #EF4444;
+        }
+        
+        .toast.info {
+            background-color: #3B82F6;
+        }
+       #f1{
+        font-family: 'Bitcount Grid Double',sans-serif;
+        font-weight: 700;
+        font-size: 3rem;
+
+       }
+        
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen p-4">
+    <div class="max-w-6xl mx-auto">
+      
+        <div id="toast" class="toast hidden">
+            <div class="flex items-center">
+                <i id="toast-icon" class="fas fa-info-circle mr-2"></i>
+                <span id="toast-message"></span>
+            </div>
+        </div>
+        
+       
+        <header class="bg-white rounded-xl shadow-md p-6 mb-6 flex justify-between items-center">
+            <div>
+                <h1 id="f1">
+                 💊INVRX
+                </h1>
+                <p class="text-gray-600"></p>
+            </div>
+              <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="suppliers.html" class="nav-link text-black-900 hover:text-green-600 px-3 pynded-md text-sm font-awesome transition-colors">Suppliers</a>
+                        <a href="analysis.html" class="nav-link text-black-900 hover:text-green-600 px-3 py-2 rounded-md text-sm font-awesome transition-colors">Analysis</a>
+                    </div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+           
+            <div class="space-y-6">
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover fade-in">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-accent"></i>
+                        Add New Drug Item
+                    </h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Drug Name</label>
+                            <input type="text" id="drugName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter drug name">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                            <input type="number" id="drugQuantity" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter quantity" value="0">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Expiration Date</label>
+                            <input type="date" id="drugExpiration" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                        </div>
+                        <button id="addDrugBtn" class="w-full bg-accent hover:bg-purple-700 text-white py-2 rounded-lg transition">
+                            <i class="fas fa-save mr-2"></i>Add Drug Item
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover fade-in">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-truck-moving mr-2 text-secondary"></i>
+                        Supply Chain Movement
+                    </h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Select Drug Item</label>
+                            <select id="movementDrug" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <option value="">Select a drug</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Movement Type</label>
+                            <select id="movementType" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <option value="">Select movement type</option>
+                                <option value="Received">Received</option>
+                                <option value="Shipped">Shipped</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                            <input type="number" id="movementQuantity" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter quantity" value="0">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Movement Date</label>
+                            <input type="date" id="movementDate" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                        </div>
+                        <button id="addMovementBtn" class="w-full bg-secondary hover:bg-indigo-700 text-white py-2 rounded-lg transition">
+                            <i class="fas fa-clipboard-check mr-2"></i>Log Movement
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover fade-in">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-capsules mr-2 text-primary"></i>
+                        Drug Inventory
+                    </h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="text-left text-gray-600 border-b">
+                                    <th class="pb-2">Drug Name</th>
+                                    <th class="pb-2">Quantity</th>
+                                    <th class="pb-2">Expiration</th>
+                                </tr>
+                            </thead>
+                            <tbody id="drugItemsList">
+                              
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+               
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover fade-in">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-history mr-2 text-secondary"></i>
+                        Supply Chain History
+                    </h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="text-left text-gray-600 border-b">
+                                    <th class="pb-2">Drug</th>
+                                    <th class="pb-2">Type</th>
+                                    <th class="pb-2">Quantity</th>
+                                    <th class="pb-2">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="movementsList">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Edit Drug Item</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Drug Name</label>
+                    <input type="text" id="editDrugName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                    <input type="number" id="editDrugQuantity" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Expiration Date</label>
+                    <input type="date" id="editDrugExpiration" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                </div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button id="cancelEditBtn" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition">Cancel</button>
+                    <button id="saveEditBtn" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700 transition">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+     <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">💊INVRX</h3>
+                    <p class="text-gray-400">Source for effective medical drug transportation and store records</p>
+                </div>
+                <div>
+                   
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact</h4>
+                    <ul class="space-y-2 text-white-400">
+                        <li><a href="#" class="hover:text-white transition-colors"></a>Contact:  9447890****</li>
+                        <li><a href="#" class="hover:text-white transition-colors"></a>Email:  hello2@gmail.com</li>
+                        <li><a href="#" class="hover:text-white transition-colors"></a>Address:  Ddtran complex,gk street,Newdelhi</li>
+
+                    </ul>
+                </div>
+                <br>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Follow Us</h4>
+                    <div class="flex space-x-4">
+                        <button class="text-2xl hover:text-green-400 transition-colors">ⓕ</button>
+                        <button class="text-2xl hover:text-green-400 transition-colors">🅾</button>
+                        <button class="text-2xl hover:text-green-400 transition-colors">🐦</button>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 INVRX. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+             let drugItems = JSON.parse(localStorage.getItem('drugItems')) || [];
+            let movements = JSON.parse(localStorage.getItem('movements')) || [];
+            
+            const drugItemsList = document.getElementById('drugItemsList');
+            const movementsList = document.getElementById('movementsList');
+            const movementDrugSelect = document.getElementById('movementDrug');
+            const editModal = document.getElementById('editModal');
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
+            
+      
+            function initApp() {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('drugExpiration').min = today;
+                document.getElementById('movementDate').value = today;
+                
+               
+                loadDrugItems();
+                loadMovements();
+                populateMovementDrugSelect();
+              
+                document.getElementById('addDrugBtn').addEventListener('click', addDrugItem);
+                document.getElementById('addMovementBtn').addEventListener('click', addMovement);
+                document.getElementById('refreshBtn').addEventListener('click', refreshData);
+                document.getElementById('saveEditBtn').addEventListener('click', saveDrugEdit);
+                document.getElementById('cancelEditBtn').addEventListener('click', closeEditModal);
+                
+              
+                editModal.addEventListener('click', function(e) {
+                    if (e.target === editModal) {
+                        closeEditModal();
+                    }
+                });
+            }
+            
+          
+            function showToast(message, type = 'info') {
+                toastMessage.textContent = message;
+                toast.className = 'toast show ' + type;
+                toastIcon.className = type === 'success' ? 'fas fa-check-circle mr-2' : 
+                                    type === 'error' ? 'fas fa-exclamation-circle mr-2' : 
+                                    'fas fa-info-circle mr-2';
+                
+                setTimeout(() => {
+                    toast.className = 'toast';
+                }, 3000);
+            }
+        
+            function loadDrugItems() {
+                drugItemsList.innerHTML = '';
+                
+                if (drugItems.length === 0) {
+                    drugItemsList.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="py-4 text-center text-gray-500">
+                                No drug items found. Add your first drug item.
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                drugItems.forEach((drug, index) => {
+                    const row = document.createElement('tr');
+                    row.className = 'border-b hover:bg-gray-50';
+                    row.innerHTML = `
+                        <td class="py-3">${drug.name}</td>
+                        <td class="py-3">${drug.quantity}</td>
+                        <td class="py-3">${formatDate(drug.expiration)}</td>
+                        <td class="py-3">
+                            <button class="edit-btn mr-2 text-blue-600 hover:text-blue-800" data-index="${index}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="delete-btn text-red-600 hover:text-red-800" data-index="${index}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    drugItemsList.appendChild(row);
+                });
+
+                document.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => openEditModal(e.target.closest('.edit-btn').dataset.index));
+                });
+                
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => deleteDrugItem(e.target.closest('.delete-btn').dataset.index));
+                });
+            }
+            
+           
+            function loadMovements() {
+                movementsList.innerHTML = '';
+                
+                if (movements.length === 0) {
+                    movementsList.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="py-4 text-center text-gray-500">
+                                No movements recorded yet.
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+              
+                const recentMovements = [...movements].reverse().slice(0, 10);
+                
+                recentMovements.forEach(movement => {
+                    const row = document.createElement('tr');
+                    row.className = 'border-b hover:bg-gray-50';
+                    row.innerHTML = `
+                        <td class="py-3">${movement.drugName}</td>
+                        <td class="py-3">
+                            <span class="px-2 py-1 rounded-full text-xs ${movement.type === 'Received' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                ${movement.type}
+                            </span>
+                        </td>
+                        <td class="py-3">${movement.quantity}</td>
+                        <td class="py-3">${formatDate(movement.date)}</td>
+                    `;
+                    movementsList.appendChild(row);
+                });
+            }
+            
+            function populateMovementDrugSelect() {
+                movementDrugSelect.innerHTML = '<option value="">Select a drug</option>';
+                
+                drugItems.forEach(drug => {
+                    const option = document.createElement('option');
+                    option.value = drug.name;
+                    option.textContent = drug.name;
+                    movementDrugSelect.appendChild(option);
+                });
+            }
+           
+            function addDrugItem() {
+                const nameInput = document.getElementById('drugName');
+                const quantityInput = document.getElementById('drugQuantity');
+                const expirationInput = document.getElementById('drugExpiration');
+                
+                const name = nameInput.value.trim();
+                const quantity = parseInt(quantityInput.value);
+                const expiration = expirationInput.value;
+                
+             
+                if (!name) {
+                    showToast('Please enter a drug name', 'error');
+                    nameInput.focus();
+                    return;
+                }
+                
+                if (isNaN(quantity) || quantity < 0) {
+                    showToast('Please enter a valid quantity', 'error');
+                    quantityInput.focus();
+                    return;
+                }
+                
+                if (!expiration) {
+                    showToast('Please select an expiration date', 'error');
+                    expirationInput.focus();
+                    return;
+                }
+                
+             
+                const existingIndex = drugItems.findIndex(item => item.name.toLowerCase() === name.toLowerCase());
+                
+                if (existingIndex >= 0) {
+                   
+                    drugItems[existingIndex].quantity += quantity;
+                    drugItems[existingIndex].expiration = expiration;
+                    showToast(`Updated quantity of ${name}`, 'success');
+                } else {
+                   drugItems.push({
+                        name,
+                        quantity,
+                        expiration
+                    });
+                    showToast(`Added ${name} to inventory`, 'success');
+                }
+                
+                
+                localStorage.setItem('drugItems', JSON.stringify(drugItems));
+              
+                nameInput.value = '';
+                quantityInput.value = '0';
+                expirationInput.value = '';
+                
+              
+                loadDrugItems();
+                populateMovementDrugSelect();
+            }
+            
+            function addMovement() {
+                const drugName = movementDrugSelect.value;
+                const type = document.getElementById('movementType').value;
+                const quantity = parseInt(document.getElementById('movementQuantity').value);
+                const date = document.getElementById('movementDate').value;
+                
+                
+                if (!drugName) {
+                    showToast('Please select a drug', 'error');
+                    movementDrugSelect.focus();
+                    return;
+                }
+                
+                if (!type) {
+                    showToast('Please select a movement type', 'error');
+                    document.getElementById('movementType').focus();
+                    return;
+                }
+                
+                if (isNaN(quantity) || quantity <= 0) {
+                    showToast('Please enter a valid quantity', 'error');
+                    document.getElementById('movementQuantity').focus();
+                    return;
+                }
+                
+                if (!date) {
+                    showToast('Please select a date', 'error');
+                    document.getElementById('movementDate').focus();
+                    return;
+                }
+              
+                const drugIndex = drugItems.findIndex(item => item.name === drugName);
+                
+                if (drugIndex === -1) {
+                    showToast('Selected drug not found in inventory', 'error');
+                    return;
+                }
+                
+               
+                if (type === 'Shipped' && drugItems[drugIndex].quantity < quantity) {
+                    showToast(`Not enough ${drugName} in inventory. Only ${drugItems[drugIndex].quantity} available.`, 'error');
+                    return;
+                }
+                
+              
+                if (type === 'Received') {
+                    drugItems[drugIndex].quantity += quantity;
+                } else {
+                    drugItems[drugIndex].quantity -= quantity;
+                }
+                
+              
+                movements.push({
+                    drugName,
+                    type,
+                    quantity,
+                    date
+                });
+                
+               
+                localStorage.setItem('drugItems', JSON.stringify(drugItems));
+                localStorage.setItem('movements', JSON.stringify(movements));
+               
+                movementDrugSelect.value = '';
+                document.getElementById('movementType').value = '';
+                document.getElementById('movementQuantity').value = '0';
+                
+               
+                loadDrugItems();
+                loadMovements();
+                
+               
+                showToast(`Movement recorded: ${type} ${quantity} units of ${drugName}`, 'success');
+            }
+            
+            
+            function openEditModal(index) {
+                const drug = drugItems[index];
+                
+                document.getElementById('editDrugName').value = drug.name;
+                document.getElementById('editDrugQuantity').value = drug.quantity;
+                document.getElementById('editDrugExpiration').value = drug.expiration;
+                
+                document.getElementById('saveEditBtn').dataset.index = index;
+            
+                editModal.classList.remove('hidden');
+            }
+            
+         
+            function closeEditModal() {
+                editModal.classList.add('hidden');
+            }
+            
+            
+            function saveDrugEdit() {
+                const index = document.getElementById('saveEditBtn').dataset.index;
+                const name = document.getElementById('editDrugName').value.trim();
+                const quantity = parseInt(document.getElementById('editDrugQuantity').value);
+                const expiration = document.getElementById('editDrugExpiration').value;
+                
+              
+                if (!name) {
+                    showToast('Please enter a drug name', 'error');
+                    document.getElementById('editDrugName').focus();
+                    return;
+                }
+                
+                if (isNaN(quantity) || quantity < 0) {
+                    showToast('Please enter a valid quantity', 'error');
+                    document.getElementById('editDrugQuantity').focus();
+                    return;
+                }
+                
+                if (!expiration) {
+                    showToast('Please select an expiration date', 'error');
+                    document.getElementById('editDrugExpiration').focus();
+                    return;
+                }
+               
+                drugItems[index] = {
+                    name,
+                    quantity,
+                    expiration
+                };
+                
+                localStorage.setItem('drugItems', JSON.stringify(drugItems));
+                
+                closeEditModal();
+                loadDrugItems();
+                populateMovementDrugSelect();
+                
+               
+                showToast('Drug item updated successfully!', 'success');
+            }
+            
+            function deleteDrugItem(index) {
+                if (confirm('Are you sure you want to delete this drug item?')) {
+                    const drugName = drugItems[index].name;
+                    drugItems.splice(index, 1);
+                    
+                   
+                    localStorage.setItem('drugItems', JSON.stringify(drugItems));
+                    
+                    
+                    loadDrugItems();
+                    populateMovementDrugSelect();
+                    
+                 
+                    showToast(`Deleted ${drugName} from inventory`, 'success');
+                }
+            }
+            
+           
+            function refreshData() {
+                loadDrugItems();
+                loadMovements();
+                showToast('Data refreshed!', 'info');
+            }
+          
+            function formatDate(dateString) {
+                const options = { year: 'numeric', month: 'short', day: 'numeric' };
+                return new Date(dateString).toLocaleDateString(undefined, options);
+            }
+            
+            initApp();
+        });
+    </script>
+</body>
+</html>
